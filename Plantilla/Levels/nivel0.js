@@ -18,7 +18,6 @@ export default class Nivel0 extends Phaser.Scene {
 
         //Creación de objetos
         this.torreta_principal = new TorretaPrincipal (this, 960, 400, "tor_prin");
-        s
         //Activa el imput de ratón
         let pointer = this.input.activePointer;
 
