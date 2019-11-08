@@ -5,7 +5,7 @@ export default class Menu extends Phaser.Scene {
       super({ key: 'Menu' });
     }
     preload() {  
-        this.load.image("boton_inicio","./Assets/Images/favicon.png");
+        this.load.image("boton_inicio","./Assets/Images/botonJugar.png");
     }
   
     create() {
