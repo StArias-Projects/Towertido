@@ -44,12 +44,19 @@ export default class Nivel0 extends Phaser.Scene {
         this.input.on('pointerdown', function (pointer) {
           let angle = Phaser.Math.Angle.Between(this.torreta_principal.x, this.torreta_principal.y, pointer.x, pointer.y);
           this.nueva_bala = new BalaNormal (this, 200, 200, "bala_normal", angle);
-        }, this);       
+        }, this);      
+        
+        this.infanteria.on('pointerdown', pointer => {
+          this.infanteria.PierdeVida(100);
+          console.log(this.infanteria.VidaActual());
+          if(this.infanteria.Muerto()) console.log("He muerto");
+      }); 
       }
       
       update(time, delta) {  
-        //Va aquí ?? 
+
         this.infanteria.Movimiento();
-        this.infanteria.DetectaObjectivo(this.torre, 300);
+        if(!this.infanteria.Muerto())
+          this.infanteria.DetectaObjectivo(this.torre, 300);
     }
   }
