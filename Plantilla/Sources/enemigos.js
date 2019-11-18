@@ -7,7 +7,7 @@ export class Enemigos extends Phaser.GameObjects.Sprite {
         this.setOrigin(0 , 1);
         if(this.x > 960){
             this.flipX = true;
-       }
+        }
     }
 
     Dispara(){
@@ -16,8 +16,7 @@ export class Enemigos extends Phaser.GameObjects.Sprite {
 
     //Detecta al objetivo a una distancia en X
     DetectaObjectivo(refPos, distancia){
-        if(!this.flipX && this.x >= refPos - distancia ||
-            this.flipX && this.x <= refPos + distancia){
+        if(!this.flipX && this.x >= refPos - distancia || this.flipX && this.x <= refPos + distancia){
             this.vel = 0;
             this.Dispara();
         }

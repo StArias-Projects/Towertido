@@ -7,13 +7,13 @@ export default class BalaNormal extends Phaser.GameObjects.Sprite {
         this.setScale(0.08);
     }
 
-    // Mover(){
-    //     var velocity = 10;
-    //     this.x = this.x - Math.cos(this.angle) * velocity;   
-    //     this.y = this.y - Math.sin(this.angle) * velocity;
-    // }
+    Mover(){
+        var velocity = 10;
+        this.x = this.x - Math.cos(this.angle) * velocity;   
+        this.y = this.y - Math.sin(this.angle) * velocity;
+    }
 
-    // preUpdate(){
-    //     this.Mover();
-    // }
+    preUpdate(){
+        this.Mover();
+    }
 }

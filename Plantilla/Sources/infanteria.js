@@ -9,5 +9,6 @@ export default class Infanteria extends Enemigos {
         this.setScale(2);
         this.vel = vel;
         this.setInteractive();
+        this.setOrigin(0, 1);
     }
 }
