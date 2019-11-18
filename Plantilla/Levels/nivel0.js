@@ -4,6 +4,9 @@ import BalaNormal from '../Sources/bala_normal.js';
 import Infanteria from '../Sources/infanteria.js';
 import Torre from '../Sources/torre.js';
 
+//Constantes
+// NUM_INFANTERIA = 10;
+
 let angle;
 //Clase principal
 export default class Nivel0 extends Phaser.Scene {
@@ -25,12 +28,16 @@ export default class Nivel0 extends Phaser.Scene {
       //this.physics.world.setBoundsCollision(true, true, true, true);  //Izquierda, Derecha, Arriba, Abajo
       console.log("Nivel 0");
       this.fondo = this.add.image(960, 525, "fondo");
-
+      this.tiempoEnem = 0;
+      
       //Creación de objetos
       this.torre = new Torre(this, 960, 1050, "torre");
       this.torreta_principal = new TorretaPrincipal (this, 960, 400, "tor_prin");
-      this.infanteria = new Infanteria(this, 0, 1080, "infant", 1000, 5);
+      this.infanteria = new Infanteria(this, 1500, 1080, "infant", 1000, 5);
       this.infanteria.setOrigin(0 , 1);
+
+      // this.enemigos = this.add.group(); //Array de enemigos
+      this.tiempoUltEnem = 0;
 
       //Activa el imput de ratón
       let pointer = this.input.activePointer;
@@ -43,20 +50,17 @@ export default class Nivel0 extends Phaser.Scene {
 
         this.input.on('pointerdown', function (pointer) {
           let angle = Phaser.Math.Angle.Between(this.torreta_principal.x, this.torreta_principal.y, pointer.x, pointer.y);
-          this.nueva_bala = new BalaNormal (this, 200, 200, "bala_normal", angle);
+          this.nueva_bala = new BalaNormal (this, 960, 400, "bala_normal", angle);
         }, this);      
         
-        this.infanteria.on('pointerdown', pointer => {
-          this.infanteria.PierdeVida(100);
-          console.log(this.infanteria.VidaActual());
-          if(this.infanteria.Muerto()) console.log("He muerto");
-      }); 
       }
       
       update(time, delta) {  
-
-        this.infanteria.Movimiento();
-        if(!this.infanteria.Muerto())
-          this.infanteria.DetectaObjectivo(this.torre, 300);
+        //Spawner
+        // if(this.tiempoUltEnem >= this.tiempoEnem){
+        //   this.enemigos.add(new Infanteria(this, 0, 1080, "infant", 1000, 5, this.torre.x));
+        //   this.tiempoUltEnem = 0;
+        //   this.tiempoEnem = Phaser.Math.Between(10,600);
+        // }else this.tiempoUltEnem += 5;
     }
   }

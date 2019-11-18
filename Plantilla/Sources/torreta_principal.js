@@ -6,8 +6,6 @@ export default class TorretaPrincipal extends Phaser.GameObjects.Sprite {
     }
     Rotar(x, y) {
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, x, y);
-        console.log("Coordenada X", x);
-        console.log("Coordenada Y", y);
     }
 /*     Disparar(x, y){
         let angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);

@@ -4,6 +4,10 @@ export class Enemigos extends Phaser.GameObjects.Sprite {
 
     constructor(scene, x, y, type, vidaMax, vel){
         super(scene, x, y, type, vidaMax, vel);
+        this.setOrigin(0 , 1);
+        if(this.x > 960){
+            this.flipX = true;
+       }
     }
 
     Dispara(){
@@ -11,25 +15,19 @@ export class Enemigos extends Phaser.GameObjects.Sprite {
     }
 
     //Detecta al objetivo a una distancia en X
-    DetectaObjectivo(objeto, distancia){
-        if(!this.flipX && this.x >= objeto.x - distancia ||
-            this.flipX && this.x <= objeto.x + distancia){
+    DetectaObjectivo(refPos, distancia){
+        if(!this.flipX && this.x >= refPos - distancia ||
+            this.flipX && this.x <= refPos + distancia){
             this.vel = 0;
             this.Dispara();
         }
     }      
     
     //Mueve al objeto
-    Movimiento(){
-        if(this.x >= 1920){
-            this.vel = -this.vel;
-            this.flipX = true;
-        }else if(this.x < 0){
-            this.vel = -this.vel;
-            this.flipX = false;
-        }
-
+    Movimiento(){       
+        if(this.x < 960)
         this.x += this.vel;
+        else this.x -= this.vel;
     }
 
     //Funciones de la vida
@@ -57,5 +55,10 @@ export class Enemigos extends Phaser.GameObjects.Sprite {
         //Iguala a la vida máxima si supera los límites
     IgualaVida(){
         if(this.vida >= this.vidaMax) this.vida = this.vidaMax;
+    }
+
+    preUpdate(time, delta){
+        this.Movimiento();
+        this.DetectaObjectivo(960, 300);
     }
 }
