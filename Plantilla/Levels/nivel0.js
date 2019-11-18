@@ -9,7 +9,6 @@ import TorretaNormal from '../Sources/torreta_normal.js';
 //Constantes
 // NUM_INFANTERIA = 10;
 
-let angle;
 //Clase principal
 export default class Nivel0 extends Phaser.Scene {
   constructor() {
@@ -37,6 +36,9 @@ export default class Nivel0 extends Phaser.Scene {
     this.torreta_principal = new TorretaPrincipal (this, 960, 400, "tor_prin");
     this.infanteria = new Infanteria(this, 1500, 1080, "infant", 1000, 5);
     this.hueco_uno = new Hueco(this, 1060, 600, "hueco");
+    this.hueco_dos = new Hueco(this, 860, 600, "hueco");
+    this.hueco_tres = new Hueco(this, 1060, 750, "hueco");
+    this.hueco_cuatro = new Hueco(this, 860, 750, "hueco");
 
     // this.enemigos = this.add.group(); //Array de enemigos
     this.tiempoUltEnem = 0;
@@ -53,11 +55,27 @@ export default class Nivel0 extends Phaser.Scene {
     this.input.on('pointerdown', function (pointer) {
       let angle = Phaser.Math.Angle.Between(this.torreta_principal.x, this.torreta_principal.y, pointer.x, pointer.y);
       this.nueva_bala = new BalaNormal (this, 960, 400, "bala_normal", angle);
+      console.log("Suelto bala")
     }, this);      
 
     this.hueco_uno.on('pointerdown', pointer => {
       this.torreta_uno = new TorretaNormal(this, this.hueco_uno.x, this.hueco_uno.y, "torreta_normal");
       this.hueco_uno.destroy();
+    });
+
+    this.hueco_dos.on('pointerdown', pointer => {
+      this.torreta_dos = new TorretaNormal(this, this.hueco_dos.x, this.hueco_dos.y, "torreta_normal");
+      this.hueco_dos.destroy();
+    });
+
+    this.hueco_tres.on('pointerdown', pointer => {
+      this.torreta_tres = new TorretaNormal(this, this.hueco_tres.x, this.hueco_tres.y, "torreta_normal");
+      this.hueco_tres.destroy();
+    });
+
+    this.hueco_cuatro.on('pointerdown', pointer => {
+      this.torreta_cuatro = new TorretaNormal(this, this.hueco_cuatro.x, this.hueco_cuatro.y, "torreta_normal");
+      this.hueco_cuatro.destroy();
     });
   }
     

@@ -5,6 +5,7 @@ export default class TorretaNormal extends Torreta {
     constructor(scene, x, y, type){
         super(scene, x, y, type);
         scene.add.existing(this);
+        if(x < 960) this.flipX = true;
         var time_to_shoot = 0;
     }
 
