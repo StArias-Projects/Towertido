@@ -39,8 +39,8 @@ export default class Nivel0 extends Phaser.Scene {
     this.hueco_dos = new Hueco(this, 860, 600, "hueco");
     this.hueco_tres = new Hueco(this, 1060, 750, "hueco");
     this.hueco_cuatro = new Hueco(this, 860, 750, "hueco");
-
-    // this.enemigos = this.add.group(); //Array de enemigos
+    this.huecos = this.add.group(); //Array de huecos
+    this.enemigos = this.add.group(); //Array de enemigos
     this.tiempoUltEnem = 0;
 
     //Activa el imput de ratón
@@ -53,11 +53,11 @@ export default class Nivel0 extends Phaser.Scene {
     }, this);
 
     this.input.on('pointerdown', function (pointer) {
-      let angle = Phaser.Math.Angle.Between(this.torreta_principal.x, this.torreta_principal.y, pointer.x, pointer.y);
-      this.nueva_bala = new BalaNormal (this, 960, 400, "bala_normal", angle);
+      this.torreta_principal.Disparar(pointer.x, pointer.y);
       console.log("Suelto bala")
     }, this);      
 
+    //Agrupar huecos en un array
     this.hueco_uno.on('pointerdown', pointer => {
       this.torreta_uno = new TorretaNormal(this, this.hueco_uno.x, this.hueco_uno.y, "torreta_normal");
       this.hueco_uno.destroy();
@@ -81,11 +81,11 @@ export default class Nivel0 extends Phaser.Scene {
     
   update(time, delta) {  
 
-    //Spawner
+    // Spawner
     // if(this.tiempoUltEnem >= this.tiempoEnem){
     //   this.enemigos.add(new Infanteria(this, 0, 1080, "infant", 1000, 5, this.torre.x));
     //   this.tiempoUltEnem = 0;
     //   this.tiempoEnem = Phaser.Math.Between(10,600);
-    // }else this.tiempoUltEnem += 5;
+    // }else this.tiempoUltEnem += delta/5;
   }
 }

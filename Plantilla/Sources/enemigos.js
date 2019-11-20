@@ -3,22 +3,30 @@
 export class Enemigos extends Phaser.GameObjects.Sprite {
 
     constructor(scene, x, y, type, vidaMax, vel){
-        super(scene, x, y, type, vidaMax, vel);
+        super(scene, x, y, type);
         this.setOrigin(0 , 1);
         if(this.x > 960){
             this.flipX = true;
         }
+        this.vidaMax = vidaMax;
+        this.vel = vel;
+        this.time_to_shoot = 0;
+        this.objetivo_encontrado = false;
     }
 
-    Dispara(){
-        console.log("He disparado");
+    Dispara(delta){
+        this.time_to_shoot += delta;
+        if(this.time_to_shoot > 2000){
+            console.log("PIUM PIUM");
+            this.time_to_shoot = 0;
+        }
     }
 
     //Detecta al objetivo a una distancia en X
     DetectaObjectivo(refPos, distancia){
         if(!this.flipX && this.x >= refPos - distancia || this.flipX && this.x <= refPos + distancia){
             this.vel = 0;
-            this.Dispara();
+            this.objetivo_encontrado = true;
         }
     }      
     
@@ -57,7 +65,9 @@ export class Enemigos extends Phaser.GameObjects.Sprite {
     }
 
     preUpdate(time, delta){
-        this.Movimiento();
-        this.DetectaObjectivo(960, 300);
+        if(!this.objetivo_encontrado){
+            this.DetectaObjectivo(960, 300);
+            this.Movimiento();
+        }else this.Dispara(delta);
     }
 }
