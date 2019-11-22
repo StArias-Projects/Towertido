@@ -24,6 +24,7 @@ export default class Nivel0 extends Phaser.Scene {
     this.load.image("torre", "./Assets/Images/torre.png");
     this.load.image("hueco", "./Assets/Images/hueco.png");
     this.load.image("torreta_normal", "./Assets/Images/torreta_normal.png");
+    this.load.image("vida", "./Assets/Images/barra_vida.png");
   }
 
   create() {
@@ -32,9 +33,9 @@ export default class Nivel0 extends Phaser.Scene {
     this.tiempoEnem = 0;
     
     //Creación de objetos
-    this.torre = new Torre(this, 960, 1050, "torre");
+    this.torre = new Torre(this, 960, 1050, "torre", "vida");
     this.torreta_principal = new TorretaPrincipal (this, 960, 400, "tor_prin");
-    this.infanteria = new Infanteria(this, 1500, 1080, "infant", 1000, 5);
+    this.infanteria = new Infanteria(this, 1500, 1080, "infant");
     this.hueco_uno = new Hueco(this, 1060, 600, "hueco");
     this.hueco_dos = new Hueco(this, 860, 600, "hueco");
     this.hueco_tres = new Hueco(this, 1060, 750, "hueco");
@@ -48,6 +49,10 @@ export default class Nivel0 extends Phaser.Scene {
 
     //Eventos
     //Ratón
+    this.infanteria.on('pointerdown', function(pointer){
+      this.infanteria.PierdeVida(200);
+    }, this);
+
     this.input.on('pointermove', function (pointer) {
       this.torreta_principal.Rotar(pointer.x, pointer.y);
     }, this);

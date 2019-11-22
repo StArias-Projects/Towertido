@@ -1,7 +1,16 @@
-export class Vida extends Phaser {
-    constructor(scene, vidaMax, x, y){ 
-        this.barra = this.create(x, y, "barra_vida");
-        this.vida = this.vidaMax;
+import Barra from "./barra_vida.js";
+
+export class ObjetoConVida extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, type, vidaMax, barra){ 
+        super(scene, x, y, type);
+        scene.add.existing(this);
+
+        this.vida = vidaMax;
+        this.vidaMax = vidaMax;
+
+        this.barra = new Barra(scene, x, y - this.height*1.5, "vida");
+        this.barra.setOrigin(0.5, 0);
+        this.barra.setScale(0.2, 0.1);
     }
     //Sirve para conocer la vida actual
     VidaActual(){
@@ -15,6 +24,8 @@ export class Vida extends Phaser {
     //Inflige daño a la vida
     PierdeVida(daño){
         this.vida -= daño;
+        this.barra.ReduceBarra(this.vida/this.vidaMax);
+        console.log(this.vida);
     }
 
     //recupera una cantidad de vida
