@@ -1,5 +1,4 @@
 //Importaciones de objetos
-import TorretaPrincipal from '../Sources/torreta_principal.js';
 import BalaNormal from '../Sources/bala_normal.js';
 import Infanteria from '../Sources/infanteria.js';
 import Torre from '../Sources/torre.js';
@@ -33,14 +32,9 @@ export default class Nivel0 extends Phaser.Scene {
     this.tiempoEnem = 0;
     
     //Creación de objetos
-    this.torre = new Torre(this, 960, 1050, "torre", "vida");
-    this.torreta_principal = new TorretaPrincipal (this, 960, 400, "tor_prin");
+    var pisos = 4; //2, 3 o 4
+    this.torre = new Torre(this, 960, 1024, "torre", pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
     this.infanteria = new Infanteria(this, 1500, 1080, "infant");
-    this.hueco_uno = new Hueco(this, 1060, 600, "hueco");
-    this.hueco_dos = new Hueco(this, 860, 600, "hueco");
-    this.hueco_tres = new Hueco(this, 1060, 750, "hueco");
-    this.hueco_cuatro = new Hueco(this, 860, 750, "hueco");
-    this.huecos = this.add.group(); //Array de huecos
     this.enemigos = this.add.group(); //Array de enemigos
     this.tiempoUltEnem = 0;
 
@@ -54,34 +48,28 @@ export default class Nivel0 extends Phaser.Scene {
     }, this);
 
     this.input.on('pointermove', function (pointer) {
-      this.torreta_principal.Rotar(pointer.x, pointer.y);
+      this.torre.torreta_principal.Rotar(pointer.x, pointer.y);
     }, this);
 
     this.input.on('pointerdown', function (pointer) {
-      this.torreta_principal.Disparar(pointer.x, pointer.y);
+      this.torre.torreta_principal.Disparar(pointer.x, pointer.y);
       console.log("Suelto bala")
-    }, this);      
+    }, this);   
+
+    for(var i = 0; i < pisos * 2; i++){
+      this.torre.huecos[i].on('pointerdown', function (pointer) {
+        console.log("pulsado el hueco " + i)
+        //this.torre.huecos[i].ConstruirTorretaNormal();
+      }, this); 
+    }   
 
     //Agrupar huecos en un array
-    this.hueco_uno.on('pointerdown', pointer => {
-      this.torreta_uno = new TorretaNormal(this, this.hueco_uno.x, this.hueco_uno.y, "torreta_normal");
-      this.hueco_uno.destroy();
-    });
-
-    this.hueco_dos.on('pointerdown', pointer => {
+    //Funcion hueco
+    /* this.hueco_dos.on('pointerdown', pointer => {
       this.torreta_dos = new TorretaNormal(this, this.hueco_dos.x, this.hueco_dos.y, "torreta_normal");
       this.hueco_dos.destroy();
     });
-
-    this.hueco_tres.on('pointerdown', pointer => {
-      this.torreta_tres = new TorretaNormal(this, this.hueco_tres.x, this.hueco_tres.y, "torreta_normal");
-      this.hueco_tres.destroy();
-    });
-
-    this.hueco_cuatro.on('pointerdown', pointer => {
-      this.torreta_cuatro = new TorretaNormal(this, this.hueco_cuatro.x, this.hueco_cuatro.y, "torreta_normal");
-      this.hueco_cuatro.destroy();
-    });
+ */
   }
     
   update(time, delta) {  

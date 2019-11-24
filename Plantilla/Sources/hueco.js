@@ -1,3 +1,5 @@
+import TorretaNormal from '../Sources/torreta_normal.js';
+
 export default class Hueco extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, type){
         super(scene, x, y, type);
@@ -7,6 +9,7 @@ export default class Hueco extends Phaser.GameObjects.Sprite {
     }
 
     ConstruirTorretaNormal(){
-
+        console.log("construyo torreta");
+        this.destroy();
     }
 }

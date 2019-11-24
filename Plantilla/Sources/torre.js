@@ -1,13 +1,32 @@
 import { ObjetoConVida } from "./objeto_con_vida.js";
+import TorretaPrincipal from '../Sources/torreta_principal.js';
+import Hueco from '../Sources/hueco.js';
+import TorretaNormal from '../Sources/torreta_normal.js';
 import Barra from "./barra_vida.js";
 
 export default class Torre extends ObjetoConVida{
-    constructor(scene, x, y, type, barra){
-        super(scene, x, y, type, 1000, barra);
+    constructor(scene, x, y, type, pisos){
+        super(scene, x, y, type);
+        this.setScale(1.8, 2.2);
+        this.altura = 1024;
+        if(pisos == 3) this.altura -= 198;
+        if(pisos == 4) this.altura -= 396;
+        this.setPosition(960, this.altura);
         scene.add.existing(this);
-        this.setScale(4.7, 7);
-        this.barra = new Barra(scene, 0, 0, barra);
-        this.barra.setOrigin(0);
-        this.barra.setScale(1, 0.5);
+
+        //Creamos la torreta principal
+        this.torreta_principal = new TorretaPrincipal (scene, 960, this.altura - 500, "tor_prin");
+
+        //Creamos los huecos
+        this.huecos = new Array(pisos * 2); //Array de huecos
+        var altura_ini = 860;
+        var distancia_al_centro = 145;
+        for(var i = 0; i < pisos; i++){
+            this.huecoIzquierda = new Hueco(scene, 960 - distancia_al_centro, altura_ini, "hueco");
+            this.huecos[i * 2] = this.huecoIzquierda;
+            this.huecoDerecha= new Hueco(scene, 960 + distancia_al_centro, altura_ini, "hueco");
+            this.huecos[i * 2 + 1] = this.huecoIzquierda;
+            altura_ini -= 198;
+        }
     }
 }
