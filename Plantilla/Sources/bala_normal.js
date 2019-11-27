@@ -1,7 +1,9 @@
-export default class BalaNormal extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, type, angle){
-        super(scene, x, y, type, angle);
+import { Bala } from "./bala.js";
+
+export default class BalaNormal extends Bala {
+    constructor(scene, x, y, type, angle, velocidad){
+        super(scene, x, y, type, angle, velocidad);        
         scene.add.existing(this);
-        this.rotation = angle;
+        this.setScale(0.1);
     }
 }
