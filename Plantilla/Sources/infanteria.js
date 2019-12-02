@@ -8,8 +8,4 @@ export default class Infanteria extends Enemigos {
         this.setOrigin(0.5, 1);  
         scene.add.existing(this);
     }
-
-    DestruyeObjeto(){
-        if(this.Muerto()) this.destroy();
-    }
 }

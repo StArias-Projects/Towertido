@@ -35,31 +35,37 @@ export default class Nivel0 extends Phaser.Scene {
     this.tiempoUltEnem = 0;
     this.costeTNormal = 100;
     this.infanteriaDinero = 200;
-    
+    this.tiempoEntreRonda = 5000;
+    this.empiezaRonda = 0;
+
     //Creación de objetos
       //Torre
     this.torre = new Torre(this, 960, 1024, "torre", this.pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
     this.numHuecos = this.torre.huecos.length;
+
       //Enemigos
     this.infanteria = new Infanteria(this, 1500, 1080, "infant");
     this.enemigos = this.add.group(); //Array de enemigos
+    
       //Dinero
-    this.dinero = new Dinero(this, 1540, 0);
+    this.dinero = new Dinero(this, 1340, 0);
 
     //Activa el imput de ratón
     let pointer = this.input.activePointer;
 
     //Eventos
       //Ratón
+        //Prueba de Infantería
     this.infanteria.on('pointerdown', function(pointer){
       this.infanteria.PierdeVida(200);
     }, this);
 
+        //Rotación de la torreta principal en función del ratón
     this.input.on('pointermove', function (pointer) {
       this.torre.torreta_principal.Rotar(pointer.x, pointer.y);
     }, this);
 
-  
+        //Cadencia de la torreta principal
     this.input.on('pointerdown', function (pointer) {
       if(this.torPrinDisparaTime > this.torPrinDelay){
         this.torre.torreta_principal.Disparar(pointer.x, pointer.y);
@@ -67,7 +73,7 @@ export default class Nivel0 extends Phaser.Scene {
       }
     }, this);    
 
-      //Construcción de torretas
+       //Construcción de torretas
     for(let i = 0; i < this.numHuecos; i++){
       this.torre.huecos[i].on('pointerdown', function (pointer) {
         console.log("pulsado el hueco " + i)
@@ -76,10 +82,7 @@ export default class Nivel0 extends Phaser.Scene {
           this.dinero.ActualizaDinero(-this.costeTNormal);
         } 
       }, this);
-    }   
-
-    this.tiempoEntreRonda = 5000;
-    this.empiezaRonda = 0;
+    }       
   }
     
   update(time, delta) {  

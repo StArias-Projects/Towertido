@@ -2,9 +2,11 @@ export default class Dinero extends Phaser.GameObjects.Text{
     constructor(scene, x, y){
         super(scene, x, y);
         this.cantidad = 400;
-        this.setFontSize(200);
-        // this.setFont('Showcard Gothic')
+        this.setFontSize(65);
+        this.setFontFamily('Showcard Gothic');
+        // this.setFontFamily('Impact');
         this.setText(this.cantidad);
+        this.setColor('#990000');
         scene.add.existing(this);
     }
   
@@ -12,9 +14,6 @@ export default class Dinero extends Phaser.GameObjects.Text{
         this.cantidad += nuevo;
         this.setText(this.cantidad);
     }
-  
-    //Esto en la funcion del hueco del puntero de Nivel0
-    /* */
  }
  
  

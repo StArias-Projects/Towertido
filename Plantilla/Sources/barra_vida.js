@@ -4,7 +4,7 @@ export default class Barra extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
     }
 
-    ReduceBarra(porcentaje){
-        this.width = this.width*porcentaje;
+    ReduceBarra(porcentaje, h){
+        this.setScale(porcentaje, h);
     }
 }
