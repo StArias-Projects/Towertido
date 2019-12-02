@@ -1,12 +1,7 @@
 //Importaciones de objetos
-import BalaNormal from '../Sources/bala_normal.js';
 import Infanteria from '../Sources/infanteria.js';
 import Torre from '../Sources/torre.js';
-import Hueco from '../Sources/hueco.js';
-import TorretaNormal from '../Sources/torreta_normal.js';
-
-//Constantes
-// NUM_INFANTERIA = 10;
+import Dinero from '../Sources/dinero.js';
 
 //Clase principal
 export default class Nivel0 extends Phaser.Scene {
@@ -29,20 +24,33 @@ export default class Nivel0 extends Phaser.Scene {
   create() {
     console.log("Nivel 0");
     this.fondo = this.add.image(960, 525, "fondo");
+
+    //Tiempos de espera
     this.tiempoEnem = 0;
+    this.torPrinDelay = 500;
+    this.torPrinDisparaTime = 0;
+
+    //Variables númericas
+    this.pisos = 4; //2, 3 o 4
+    this.tiempoUltEnem = 0;
+    this.costeTNormal = 100;
+    this.infanteriaDinero = 200;
     
     //Creación de objetos
-    var pisos = 4; //2, 3 o 4
-    this.torre = new Torre(this, 960, 1024, "torre", pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
+      //Torre
+    this.torre = new Torre(this, 960, 1024, "torre", this.pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
+    this.numHuecos = this.torre.huecos.length;
+      //Enemigos
     this.infanteria = new Infanteria(this, 1500, 1080, "infant");
     this.enemigos = this.add.group(); //Array de enemigos
-    this.tiempoUltEnem = 0;
+      //Dinero
+    this.dinero = new Dinero(this, 1540, 0);
 
     //Activa el imput de ratón
     let pointer = this.input.activePointer;
 
     //Eventos
-    //Ratón
+      //Ratón
     this.infanteria.on('pointerdown', function(pointer){
       this.infanteria.PierdeVida(200);
     }, this);
@@ -51,34 +59,41 @@ export default class Nivel0 extends Phaser.Scene {
       this.torre.torreta_principal.Rotar(pointer.x, pointer.y);
     }, this);
 
+  
     this.input.on('pointerdown', function (pointer) {
-      this.torre.torreta_principal.Disparar(pointer.x, pointer.y);
-      console.log("Suelto bala")
-    }, this);   
+      if(this.torPrinDisparaTime > this.torPrinDelay){
+        this.torre.torreta_principal.Disparar(pointer.x, pointer.y);
+        this.torPrinDisparaTime = 0;
+      }
+    }, this);    
 
-    for(var i = 0; i < pisos * 2; i++){
+      //Construcción de torretas
+    for(let i = 0; i < this.numHuecos; i++){
       this.torre.huecos[i].on('pointerdown', function (pointer) {
         console.log("pulsado el hueco " + i)
-        //this.torre.huecos[i].ConstruirTorretaNormal();
-      }, this); 
+        if(this.dinero.cantidad >= this.costeTNormal){
+          this.torre.huecos[i].ConstruirTorretaNormal();
+          this.dinero.ActualizaDinero(-this.costeTNormal);
+        } 
+      }, this);
     }   
 
-    //Agrupar huecos en un array
-    //Funcion hueco
-    /* this.hueco_dos.on('pointerdown', pointer => {
-      this.torreta_dos = new TorretaNormal(this, this.hueco_dos.x, this.hueco_dos.y, "torreta_normal");
-      this.hueco_dos.destroy();
-    });
- */
+    this.tiempoEntreRonda = 5000;
+    this.empiezaRonda = 0;
   }
     
   update(time, delta) {  
 
+    if(this.empiezaRonda >= this.tiempoEntreRonda){
     // Spawner
-    // if(this.tiempoUltEnem >= this.tiempoEnem){
-    //   this.enemigos.add(new Infanteria(this, 0, 1080, "infant", 1000, 5, this.torre.x));
-    //   this.tiempoUltEnem = 0;
-    //   this.tiempoEnem = Phaser.Math.Between(10,600);
-    // }else this.tiempoUltEnem += delta/5;
+      if(this.tiempoUltEnem >= this.tiempoEnem){
+        this.enemigos.add(new Infanteria(this, 0, 1080, "infant", 1000, 5, this.torre.x));
+        this.tiempoUltEnem = 0;
+        this.tiempoEnem = Phaser.Math.Between(1000,3000);
+      }else this.tiempoUltEnem += delta;
+    }
+    else this.empiezaRonda += delta;
+    
+    this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal
   }
 }

@@ -1,7 +1,6 @@
 import { ObjetoConVida } from "./objeto_con_vida.js";
 import TorretaPrincipal from '../Sources/torreta_principal.js';
 import Hueco from '../Sources/hueco.js';
-import TorretaNormal from '../Sources/torreta_normal.js';
 import Barra from "./barra_vida.js";
 
 export default class Torre extends ObjetoConVida{
@@ -21,11 +20,9 @@ export default class Torre extends ObjetoConVida{
         this.huecos = new Array(pisos * 2); //Array de huecos
         var altura_ini = 860;
         var distancia_al_centro = 145;
-        for(var i = 0; i < pisos; i++){
-            this.huecoIzquierda = new Hueco(scene, 960 - distancia_al_centro, altura_ini, "hueco");
-            this.huecos[i * 2] = this.huecoIzquierda;
-            this.huecoDerecha= new Hueco(scene, 960 + distancia_al_centro, altura_ini, "hueco");
-            this.huecos[i * 2 + 1] = this.huecoIzquierda;
+        for(let i = 0; i < pisos; i++){
+            this.huecos[i * 2] = new Hueco(scene, 960 - distancia_al_centro, altura_ini, "hueco");;//Huecos de la izquierda
+            this.huecos[i * 2 + 1] = new Hueco(scene, 960 + distancia_al_centro, altura_ini, "hueco"); //Huecos de la derecha
             altura_ini -= 198;
         }
     }

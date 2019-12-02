@@ -1,26 +1,15 @@
 import { Torreta } from "./torreta.js";
-import BalaNormal from "./bala_normal.js";
+import BalaNormal from './bala_normal.js';
 
 export default class TorretaNormal extends Torreta {
     constructor(scene, x, y, type){
         super(scene, x, y, type);
         scene.add.existing(this);
-        if(x < 960) this.flipX = true;
-        // var time_to_shoot = 0;
-        this.time_to_shoot = 0;
-    }
-
+        this.setScale(0.05);
+    }        
+    
     Disparar(){
-        // this.nueva_bala = new BalaNormal (this, 960, 400, "bala_normal", 0);
-        console.log("PIUM PIUM (Torreta)");
-    }
-
-    preUpdate(time, delta){
-        this.time_to_shoot = this.time_to_shoot + 1;
-        if(this.time_to_shoot > 100){
-            this.Disparar();
-            this.time_to_shoot = 0;
-        }
-        
+        let angle = Phaser.Math.Angle.Between(this.x, this.y, this.targetX, this.targetY);
+        this.nueva_bala = new BalaNormal (this.scene, this.x, this.y, "bala_normal", angle, 50);
     }
 }
