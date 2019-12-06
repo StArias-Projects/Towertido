@@ -65,13 +65,19 @@ export default class Nivel0 extends Phaser.Scene {
       this.balasAliadas.destroy();
     });
 
+    this.physics.add.overlap(this.torre, this.balasEnemigas, function(torre, balasEnemigas){
+      console.log("bala enemiga + torre");
+      this.balasEnemigas.destroy();
+      if(this.torre.Muerto()) console.log("GAME OVER!"); //Aqui va el cambio a la escena de GAME OVER
+    });
+
     this.physics.add.collider(this.torre, this.balasEnemigas);
 
     //Activa el imput de ratón
     let pointer = this.input.activePointer;
 
     //Eventos Ratón
-
+    //Auxiliares para debug
     this.torre.on('pointerdown', function (pointer) {
       this.torre.PierdeVida(200);
     }, this); 
@@ -122,8 +128,5 @@ export default class Nivel0 extends Phaser.Scene {
     else this.empiezaRonda += delta;
     
     this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal
-    if(this.torre.Muerto()) console.log("GAME OVER!!");
   }
-
-
 }
