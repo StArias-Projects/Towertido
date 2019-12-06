@@ -4,18 +4,15 @@ import Barra from "./barra_vida.js"
 export class Enemigos extends ObjetoConVida {
 
     constructor(scene, x, y, type, vidaMax, vel){
-        super(scene, x, y, type, vidaMax);
+        super(scene, x, y, type, vidaMax, false);
         if(this.x > 960){
             this.flipX = true;
         }
         this.vel = vel;
         this.time_to_shoot = 0;
-        this.objetivo_encontrado = false;       
-
-        this.barra = new Barra(scene, x, y - this.height*1.5, "vida");
-        this.barra.setOrigin(0.5, 0);
-        this.barra.setScale(0.2, 0.1);
+        this.objetivo_encontrado = false;
     }
+
     Dispara(delta){
         this.time_to_shoot += delta;
         if(this.time_to_shoot > 2000){
@@ -55,7 +52,6 @@ export class Enemigos extends ObjetoConVida {
                 this.DetectaObjectivo(960, 300);
                 this.Movimiento();
             }else this.Dispara(delta);
-            this.barra.ReduceBarra((this.vida/this.vidaMax)*0.2, 0.1);
         }
     }
 }

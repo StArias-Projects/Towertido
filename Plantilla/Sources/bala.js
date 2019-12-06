@@ -19,6 +19,7 @@ export  class Bala extends Phaser.GameObjects.Sprite {
         this.destroy();
        }
     }
+    
     preUpdate(time, delta){
         this.Mover();
         this.DestruyeBala();

@@ -5,7 +5,7 @@ import Barra from "./barra_vida.js";
 
 export default class Torre extends ObjetoConVida{
     constructor(scene, x, y, type, pisos){
-        super(scene, x, y, type, 1500);
+        super(scene, x, y, type, 1500, true);
         this.setScale(1.8, 2.2);
         this.altura = 1024;
         if(pisos == 3) this.altura -= 198;
@@ -25,15 +25,9 @@ export default class Torre extends ObjetoConVida{
             this.huecos[i * 2 + 1] = new Hueco(scene, 960 + distancia_al_centro, altura_ini, "hueco"); //Huecos de la derecha
             altura_ini -= 198;
         }
-
-        //Barra de vida
-        this.barra = new Barra(scene, 0, 0, "vida");
-        this.barra.setOrigin(0);
-        this.barra.setScale(1, 0.5);
     }
 
     preUpdate(time, delta){
-        this.barra.ReduceBarra(this.vida/this.vidaMax, 0.5);
-        this.barra.x = 0;
+
     }
 }

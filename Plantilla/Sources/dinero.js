@@ -2,11 +2,12 @@ export default class Dinero extends Phaser.GameObjects.Text{
     constructor(scene, x, y){
         super(scene, x, y);
         this.cantidad = 400;
-        this.setFontSize(65);
+        this.setOrigin(1,0);
+        this.setFontSize(30);
         this.setFontFamily('Showcard Gothic');
         // this.setFontFamily('Impact');
         this.setText(this.cantidad);
-        this.setColor('#990000');
+        this.setColor('#FF8000');
         scene.add.existing(this);
     }
   
