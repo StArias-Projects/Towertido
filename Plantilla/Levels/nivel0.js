@@ -132,7 +132,10 @@ export default class Nivel0 extends Phaser.Scene {
     if(this.empiezaRonda >= this.tiempoEntreRonda){
     // Spawner
       if(this.tiempoUltEnem >= this.tiempoEnem && this.wave < this.numEnem.length && this.it < this.numEnem[this.wave]){
-        this.enemigos.add(new Infanteria(this, 0, 1080, "infant"));
+        let rand = Phaser.Math.Between(0, 6);
+        if(rand <= 2) this.enemigos.add(new Infanteria(this, 0, 1080, "infant")); //Lado izquierdo
+        else if(rand >2) this.enemigos.add(new Infanteria(this, 1920, 1080, "infant")); //Lado derecho
+        
         console.log(this.enemigos.children.size);
         this.tiempoUltEnem = 0;
         this.tiempoEnem = Phaser.Math.Between(1000,3000);
