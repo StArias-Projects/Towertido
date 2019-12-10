@@ -2,6 +2,7 @@
 import Infanteria from '../Sources/infanteria.js';
 import Torre from '../Sources/torre.js';
 import Dinero from '../Sources/dinero.js';
+import Oleada from '../Sources/oleadas.js';
 
 //Clase principal
 export default class Nivel0 extends Phaser.Scene {
@@ -45,9 +46,17 @@ export default class Nivel0 extends Phaser.Scene {
     this.numHuecos = this.torre.huecos.length;
 
     //Enemigos
-    this.inf = new Infanteria(this, 1300, 1080, "infant", 1000, 5, this.torre.x).setInteractive();
-    this.inf2 = new Infanteria(this, 700, 1080, "infant", 1000, 5, this.torre.x).setInteractive();
+    // this.inf = new Infanteria(this, 1300, 1080, "infant", 1000, 5, this.torre.x).setInteractive();
+    // this.inf2 = new Infanteria(this, 700, 1080, "infant", 1000, 5, this.torre.x).setInteractive();
     this.enemigos = this.add.group(); //Array de enemigos
+    this.muertesOleada = 0;
+    this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
+    this.numEnem[0] = 10;
+    this.numEnem[1] = 12;
+    this.numEnem[2] = 14;
+    this.numEnem[3] = 15;
+    this.wave = 0; //Sirve para iterar entre el array numEnem
+    this.it = 0; //Sirve para iterar entre el grupo de enemigos
 
     //Balas
     this.balasAliadas = this.add.group(); //Array de balas aliadas
@@ -56,6 +65,9 @@ export default class Nivel0 extends Phaser.Scene {
     //HUD
     this.hud = this.add.image(1920,1080, "HUD").setOrigin(0).setPosition(0,0);
     
+    //Oleada
+    this.oleadas = new Oleada(this, 1842, 68, 4);
+
     //Dinero
     this.dinero = new Dinero(this, 1677, 68);
 
@@ -82,13 +94,13 @@ export default class Nivel0 extends Phaser.Scene {
       this.torre.PierdeVida(200);
     }, this); 
 
-    this.inf.on('pointerdown', function (pointer) {
-      this.inf.PierdeVida(200);
-    }, this);  
+    // this.inf.on('pointerdown', function (pointer) {
+    //   this.inf.PierdeVida(200);
+    // }, this);  
 
-    this.inf2.on('pointerdown', function (pointer) {
-      this.inf2.PierdeVida(200);
-    }, this);  
+    // this.inf2.on('pointerdown', function (pointer) {
+    //   this.inf2.PierdeVida(200);
+    // }, this);  
 
     //Rotación de la torreta principal en función del ratón
     this.input.on('pointermove', function (pointer) {
@@ -119,14 +131,22 @@ export default class Nivel0 extends Phaser.Scene {
   update(time, delta) {  
     if(this.empiezaRonda >= this.tiempoEntreRonda){
     // Spawner
-      if(this.tiempoUltEnem >= this.tiempoEnem){
-        this.enemigos.add(new Infanteria(this, 0, 1080, "infant", 1000, 5, this.torre.x));
+      if(this.tiempoUltEnem >= this.tiempoEnem && this.wave < this.numEnem.length && this.it < this.numEnem[this.wave]){
+        this.enemigos.add(new Infanteria(this, 0, 1080, "infant"));
+        console.log(this.enemigos.children.size);
         this.tiempoUltEnem = 0;
         this.tiempoEnem = Phaser.Math.Between(1000,3000);
+        this.it++;
       }else this.tiempoUltEnem += delta;
     }
     else this.empiezaRonda += delta;
     
+    if(this.wave < this.numEnem.length && this.muertesOleada >= this.numEnem[this.wave]){
+      this.muertesOleada = 0;
+      this.it = 0;
+      this.wave++; 
+      this.oleadas.CambiaOleada();
+    }
     this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal
   }
 }

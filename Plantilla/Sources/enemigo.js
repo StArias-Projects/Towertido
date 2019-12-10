@@ -1,5 +1,5 @@
 import { ObjetoConVida } from "./objeto_con_vida.js";
-import Barra from "./barra_vida.js"
+import BalaNormal from './bala_normal.js';
 
 export class Enemigos extends ObjetoConVida {
 
@@ -11,6 +11,7 @@ export class Enemigos extends ObjetoConVida {
         this.vel = vel;
         this.time_to_shoot = 0;
         this.objetivo_encontrado = false;
+        this.game = scene;
     }
 
     Dispara(delta){
@@ -18,6 +19,9 @@ export class Enemigos extends ObjetoConVida {
         if(this.time_to_shoot > 2000){
             console.log("PIUM PIUM");
             this.time_to_shoot = 0;
+            this.game.torre.PierdeVida(10);
+            let angle = Phaser.Math.Angle.Between(this.x, this.y, 960,1080 - this.height);
+            this.nueva_bala = new BalaNormal (this.scene, this.x, this.y - this.height, "bala_normal", angle, 50);
         }
     }
 
@@ -47,11 +51,15 @@ export class Enemigos extends ObjetoConVida {
         if(this.Muerto()) {
             this.barra.destroy();
             this.destroy();
+            this.game.enemigos.remove(this);
+            this.game.muertesOleada++;
+            console.log(this.game.muertesOleada);
         }else{
             if(!this.objetivo_encontrado){
                 this.DetectaObjectivo(960, 300);
                 this.Movimiento();
             }else this.Dispara(delta);
+            this.PierdeVida(delta/10);
         }
     }
 }
