@@ -41,7 +41,6 @@ export class ObjetoConVida extends Phaser.GameObjects.Sprite {
     PierdeVida(daño){
         this.vida -= daño;
         this.ReduceBarra();
-        // console.log(this.vida);
     }
 
     ReduceBarra(){

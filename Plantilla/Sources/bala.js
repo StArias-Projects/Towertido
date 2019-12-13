@@ -5,12 +5,14 @@ export  class Bala extends Phaser.GameObjects.Sprite {
         this.velocity = velocidad;
         this.vx = Math.cos(this.rotation) * this.velocity;
         this.vy = Math.sin(this.rotation) * this.velocity;
+        scene.physics.world.enable(this);
     }
 
     Mover(){
         this.x += this.vx;
         this.y += this.vy;
     }
+
 
     DestruyeBala(){
        if(this.x > 1920 + this.width || this.x < 0 - this.width ||

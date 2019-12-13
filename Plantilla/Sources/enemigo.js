@@ -12,22 +12,31 @@ export class Enemigos extends ObjetoConVida {
         this.time_to_shoot = 0;
         this.objetivo_encontrado = false;
         this.game = scene;
+        this.distancia = Phaser.Math.Between( 300, 500);
+        scene.physics.world.enable(this);
     }
 
     Dispara(delta){
         this.time_to_shoot += delta;
         if(this.time_to_shoot > 2000){
-            console.log("PIUM PIUM");
             this.time_to_shoot = 0;
-            this.game.torre.PierdeVida(10);
             let angle = Phaser.Math.Angle.Between(this.x, this.y, 960,1080 - this.height);
-            this.nueva_bala = new BalaNormal (this.scene, this.x, this.y - this.height, "bala_normal", angle, 50);
+            this.nueva_bala = new BalaNormal (this.scene, this.x, this.y - this.height, "bala_normal", angle, 50, true, 100);
+            console.log(this.game.torre);
+            this.game.physics.add.overlap(this.nueva_bala, this.game.torre, this.BalaTorre, null, this.game);
         }
     }
 
+    BalaTorre(bala, torre){
+        console.log("Bala enem + Torre");
+        torre.PierdeVida(bala.daño);
+        bala.destroy();
+        if(torre.Muerto()) console.log("GAME OVER!"); //Aqui va el cambio a la escena de GAME OVER
+    }
+
     //Detecta al objetivo a una distancia en X
-    DetectaObjectivo(refPos, distancia){
-        if(!this.flipX && this.x >= refPos - distancia || this.flipX && this.x <= refPos + distancia){
+    DetectaObjectivo(refPos){
+        if(!this.flipX && this.x >= refPos - this.distancia || this.flipX && this.x <= refPos + this.distancia){
             this.vel = 0;
             this.objetivo_encontrado = true;
         }
@@ -53,13 +62,13 @@ export class Enemigos extends ObjetoConVida {
             this.destroy();
             this.game.enemigos.remove(this);
             this.game.muertesOleada++;
-            console.log(this.game.muertesOleada);
+            console.log("Enemigos muertos: " + this.game.muertesOleada);
         }else{
             if(!this.objetivo_encontrado){
-                this.DetectaObjectivo(960, 300);
+                this.DetectaObjectivo(960);
                 this.Movimiento();
             }else this.Dispara(delta);
-            this.PierdeVida(delta/10);
+
         }
     }
 }

@@ -32,7 +32,7 @@ export default class Nivel0 extends Phaser.Scene {
     this.torPrinDelay = 500;
     this.torPrinDisparaTime = 0;
 
-    //Variables númericas
+    //Variables generales
     this.pisos = 4; //2, 3 o 4
     this.tiempoUltEnem = 0;
     this.costeTNormal = 100;
@@ -42,25 +42,19 @@ export default class Nivel0 extends Phaser.Scene {
 
     //Creación de objetos
     //Torre
-    this.torre = new Torre(this, 960, 1024, "torre", this.pisos).setInteractive(); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
+    this.torre = new Torre(this, 960, 1024, "torre", this.pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
     this.numHuecos = this.torre.huecos.length;
 
     //Enemigos
-    // this.inf = new Infanteria(this, 1300, 1080, "infant", 1000, 5, this.torre.x).setInteractive();
-    // this.inf2 = new Infanteria(this, 700, 1080, "infant", 1000, 5, this.torre.x).setInteractive();
     this.enemigos = this.add.group(); //Array de enemigos
     this.muertesOleada = 0;
     this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
-    this.numEnem[0] = 10;
-    this.numEnem[1] = 12;
-    this.numEnem[2] = 14;
-    this.numEnem[3] = 15;
+    this.numEnem[0] = 1;
+    this.numEnem[1] = 1;
+    this.numEnem[2] = 1;
+    this.numEnem[3] = 1;
     this.wave = 0; //Sirve para iterar entre el array numEnem
     this.it = 0; //Sirve para iterar entre el grupo de enemigos
-
-    //Balas
-    this.balasAliadas = this.add.group(); //Array de balas aliadas
-    this.balasEnemigas = this.add.group(); //Array de balas enemigas
 
     //HUD
     this.hud = this.add.image(1920,1080, "HUD").setOrigin(0).setPosition(0,0);
@@ -71,36 +65,10 @@ export default class Nivel0 extends Phaser.Scene {
     //Dinero
     this.dinero = new Dinero(this, 1677, 68);
 
-    //Colisiones
-    this.physics.add.overlap(this.enemigos, this.balasAliadas, function(enemigo, balasAliada){
-      console.log("bala aliada + enemigo");
-      this.balasAliadas.destroy();
-    });
-
-    this.physics.add.overlap(this.torre, this.balasEnemigas, function(torre, balasEnemigas){
-      console.log("bala enemiga + torre");
-      this.balasEnemigas.destroy();
-      if(this.torre.Muerto()) console.log("GAME OVER!"); //Aqui va el cambio a la escena de GAME OVER
-    });
-
-    this.physics.add.collider(this.torre, this.balasEnemigas);
-
     //Activa el imput de ratón
     let pointer = this.input.activePointer;
 
     //Eventos Ratón
-    //Auxiliares para debug
-    this.torre.on('pointerdown', function (pointer) {
-      this.torre.PierdeVida(200);
-    }, this); 
-
-    // this.inf.on('pointerdown', function (pointer) {
-    //   this.inf.PierdeVida(200);
-    // }, this);  
-
-    // this.inf2.on('pointerdown', function (pointer) {
-    //   this.inf2.PierdeVida(200);
-    // }, this);  
 
     //Rotación de la torreta principal en función del ratón
     this.input.on('pointermove', function (pointer) {
@@ -111,10 +79,9 @@ export default class Nivel0 extends Phaser.Scene {
     this.input.on('pointerdown', function (pointer) {
       if(this.torPrinDisparaTime > this.torPrinDelay){
         this.torre.torreta_principal.Disparar(pointer.x, pointer.y);
-        console.log("Balas aliadas" + this.balasAliadas)
         this.torPrinDisparaTime = 0;
       }
-    }, this);    
+    }, this);
 
     //Construcción de torretas
     for(let i = 0; i < this.numHuecos; i++){
@@ -142,13 +109,18 @@ export default class Nivel0 extends Phaser.Scene {
         this.it++;
       }else this.tiempoUltEnem += delta;
     }
-    else this.empiezaRonda += delta;
+    else {
+      this.empiezaRonda += delta;
+      // console.log("Tiempo para ronda: " + (this.tiempoEntreRonda - this.empiezaRonda)/1000);
+    }
     
     if(this.wave < this.numEnem.length && this.muertesOleada >= this.numEnem[this.wave]){
       this.muertesOleada = 0;
       this.it = 0;
       this.wave++; 
+      if(this.wave == this.numEnem.length) console.log("WIN"); //Cambiar para que cambie de escena
       this.oleadas.CambiaOleada();
+      this.empiezaRonda = 0;
     }
     this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal
   }
