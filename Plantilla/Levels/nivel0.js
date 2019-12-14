@@ -3,6 +3,7 @@ import Infanteria from '../Sources/infanteria.js';
 import Torre from '../Sources/torre.js';
 import Dinero from '../Sources/dinero.js';
 import Oleada from '../Sources/oleadas.js';
+import Timer from '../Sources/tiempo_entre_oleada.js';
 
 //Clase principal
 export default class Nivel0 extends Phaser.Scene {
@@ -21,10 +22,6 @@ export default class Nivel0 extends Phaser.Scene {
     this.load.image("torreta_normal", "./Assets/Images/torreta_normal.png");
     this.load.image("vida", "./Assets/Images/barra_vida.png");
     this.load.image("HUD", "./Assets/Images/HUD.png");
-    this.load.image("boton_menu","./Assets/Images/botonMenu.png");
-    this.load.image("boton_rein","./Assets/Images/botonReiniciar.png");
-    this.load.image("win","./Assets/Images/win.png");
-    this.load.image("gameover","./Assets/Images/gameover.png");
     //Sonidos
   }
 
@@ -55,10 +52,10 @@ export default class Nivel0 extends Phaser.Scene {
       this.enemigos = this.add.group(); //Array de enemigos
       this.muertesOleada = 0;
       this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
-      this.numEnem[0] = 20;      //8
-      this.numEnem[1] = 25;     //12 
-      this.numEnem[2] = 30;     //18
-      this.numEnem[3] = 35;     //28
+      this.numEnem[0] = 1;      //8
+      this.numEnem[1] = 1;     //12 
+      this.numEnem[2] = 1;     //18
+      this.numEnem[3] = 1;     //28
       this.wave = 0; //Sirve para iterar entre el array numEnem
       this.it = 0; //Sirve para iterar entre el grupo de enemigos
       this.rangoIniEnem = 500; //Rango de apracición de enemigos(x, y);
@@ -69,15 +66,12 @@ export default class Nivel0 extends Phaser.Scene {
       
       //Oleada
       this.oleadas = new Oleada(this, 1842, 68, 4);
-
+      this.timer = new Timer(this, 970, 68);
       //Dinero
       this.dinero = new Dinero(this, 1677, 68);
 
       //Balas
       this.balas = this.add.group();
-
-    //Activa el imput de ratón
-    let pointer = this.input.activePointer;
 
     //Eventos Ratón
     //Rotación de la torreta principal en función del ratón
@@ -102,30 +96,9 @@ export default class Nivel0 extends Phaser.Scene {
         } 
       }, this);
     }  
-
-    //Win y Game Over
-    this.win = this.add.image(960,350, "win");
-    this.win.setScale(2.2);
-    this.win.visible = false;
-    this.gameover = this.add.image(960,400, "gameover");
-    this.gameover.visible = false;
-
-    //Boton para volver al Menu
-    this.boton_menu = this.add.image(650,800, "boton_menu").setInteractive();
-    this.boton_menu.visible = false;
-    this.boton_menu.on('pointerdown', pointer => {
-      this.scene.start('Menu');
-    }); 
-
-    //Boton para volver a jugar
-    this.boton_rein = this.add.image(1270,800, "boton_rein").setInteractive();
-    this.boton_rein.visible = false;
-    this.boton_rein.on('pointerdown', pointer => {
-      this.scene.start('Nivel0');
-    }); 
   }
     
-  update(time, delta) {  
+  update(time, delta) {
     if(this.empiezaRonda >= this.tiempoEntreRonda){
     // Spawner
       if(this.tiempoUltEnem >= this.tiempoEnem && this.wave < this.numEnem.length && this.it < this.numEnem[this.wave]){
@@ -141,6 +114,7 @@ export default class Nivel0 extends Phaser.Scene {
     else {
       this.empiezaRonda += delta;
       // console.log("Tiempo para ronda: " + (this.tiempoEntreRonda - this.empiezaRonda)/1000);
+      this.timer.ActualizaTiempo((this.tiempoEntreRonda - this.empiezaRonda)/ 1000);
     }
     
     if(this.wave < this.numEnem.length && this.muertesOleada >= this.numEnem[this.wave]){
@@ -155,40 +129,11 @@ export default class Nivel0 extends Phaser.Scene {
         this.rangoFinEnem -= 100;
       }
     }
-    this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal
+    this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal    
   }
 
   Finish(win){
-    if(win) this.win.visible = true;
-    else this.gameover.visible = true;
-    this.boton_menu.visible = true;
-    this.boton_rein.visible = true;
-
-    //Destrucción y visibilidad de objetos
-    for(let i = 0; i < this.numHuecos; i++){
-      this.torre.huecos[i].visible = false;
-    } 
-
-    this.torretas.children.iterate(torreta =>{
-      torreta.visible = false;
-    })
-
-    this.enemigos.children.iterate(enem =>{      
-      if(enem != undefined) {
-        enem.barra.destroy();
-        enem.destroy();
-      }
-    })
-
-    this.balas.children.iterate(bala =>{
-      if(bala!= undefined) bala.destroy();
-    })
-
-    this.torre.torreta_principal.visible = false;;
-    this.torre.barra.visible = false;;
-    this.torre.visible = false;
-    this.oleadas.visible = false;
-    this.dinero.visible = false;
-    this.hud.visible = false;
+    if(win) this.scene.start('Win');
+    else this.scene.start('GameOver');
   }
 }

@@ -8,7 +8,6 @@ export class Enemigos extends ObjetoConVida {
         }
         this.vel = vel;
         this.objetivo_encontrado = false;
-        this.game = scene;
         this.distancia = Phaser.Math.Between( 300, 500);
         scene.physics.world.enable(this);
     }
@@ -40,19 +39,9 @@ export class Enemigos extends ObjetoConVida {
 
     //Funciones de la vida
     preUpdate(time, delta){
-        if(this.Muerto()) {
-            this.barra.destroy();
-            this.destroy();
-            this.game.enemigos.remove(this);
-            this.game.muertesOleada++;
-            this.game.dinero.ActualizaDinero(this.valorAlMorir);
-            console.log("Enemigos muertos: " + this.game.muertesOleada);
-        }else{
-            if(!this.objetivo_encontrado){
-                this.DetectaObjectivo(960);
-                this.Movimiento();
-            }else this.Dispara(delta);
-
-        }
+        if(!this.objetivo_encontrado){
+            this.DetectaObjectivo(960);
+            this.Movimiento();
+        }else this.Dispara(delta);
     }
 }

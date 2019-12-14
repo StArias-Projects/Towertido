@@ -4,12 +4,13 @@ export class ObjetoConVida extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, type, vidaMax, torre){ 
         super(scene, x, y, type);
         scene.add.existing(this);
+        this.game = scene;
         this.vida = vidaMax;
         this.vidaMax = vidaMax;
         this.barra = new Barra(scene, x, y - this.height * 3, "vida");
         this.barraScaleX;
         this.barraScaleY;
-
+        
         //Diferencia entre las posiciones de la barra de vida de la torre y del resto
         this.torre = torre;
         if(torre){
@@ -42,6 +43,14 @@ export class ObjetoConVida extends Phaser.GameObjects.Sprite {
         this.vida -= daño;
         this.IgualaVida();
         this.ReduceBarra();
+        if(this.torre && this.Muerto()) this.game.Finish(false);
+        else if(!this.torre && this.Muerto()){            
+            this.barra.destroy();
+            this.destroy();
+            this.game.enemigos.remove(this);
+            this.game.muertesOleada++;
+            this.game.dinero.ActualizaDinero(this.valorAlMorir);
+        }
     }
 
     ReduceBarra(){

@@ -17,7 +17,7 @@ export default class Menu extends Phaser.Scene {
         this.boton_ini = this.add.image(960,650, "boton_inicio").setInteractive();
         
         //Puntero y eventos
-        let pointer = this.input.activePointer;
+        // let pointer = this.input.activePointer;
 
         this.boton_ini.on('pointerdown', pointer => {
             this.scene.start('Nivel0');
