@@ -6,12 +6,11 @@ export default class Hueco extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         this.setInteractive();
         this.setScale(0.04);
-        this.scene = scene;
+        this.game = scene;
     }
 
     ConstruirTorretaNormal(){
-        console.log("construyo torreta");
-        this.torreta = new TorretaNormal(this.scene, this.x, this.y, "torreta_normal");
+        this.game.torretas.add(new TorretaNormal(this.scene, this.x, this.y, "torreta_normal"));
         this.destroy();
     }
 }

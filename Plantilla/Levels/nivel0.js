@@ -29,7 +29,6 @@ export default class Nivel0 extends Phaser.Scene {
   }
 
   create() {
-    console.log("Nivel 0");
     this.fondo = this.add.image(960, 525, "fondo");
 
     //Tiempos de espera
@@ -46,29 +45,36 @@ export default class Nivel0 extends Phaser.Scene {
     this.empiezaRonda = 0;
 
     //Creación de objetos
-    //Torre
-    this.torre = new Torre(this, 960, 1024, "torre", this.pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
-    this.numHuecos = this.torre.huecos.length;
+      //Torre
+      this.torre = new Torre(this, 960, 1024, "torre", this.pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
+      this.numHuecos = this.torre.huecos.length;
+      //Torretas
+      this.torretas = this.add.group(); //Aray de torretas aliadas
+      
+      //Enemigos
+      this.enemigos = this.add.group(); //Array de enemigos
+      this.muertesOleada = 0;
+      this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
+      this.numEnem[0] = 20;      //8
+      this.numEnem[1] = 25;     //12 
+      this.numEnem[2] = 30;     //18
+      this.numEnem[3] = 35;     //28
+      this.wave = 0; //Sirve para iterar entre el array numEnem
+      this.it = 0; //Sirve para iterar entre el grupo de enemigos
+      this.rangoIniEnem = 500; //Rango de apracición de enemigos(x, y);
+      this.rangoFinEnem = 1500;
 
-    //Enemigos
-    this.enemigos = this.add.group(); //Array de enemigos
-    this.muertesOleada = 0;
-    this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
-    this.numEnem[0] = 1;      //8
-    this.numEnem[1] = 1;     //12 
-    this.numEnem[2] = 1;     //18
-    this.numEnem[3] = 2;     //28
-    this.wave = 0; //Sirve para iterar entre el array numEnem
-    this.it = 0; //Sirve para iterar entre el grupo de enemigos
+      //HUD
+      this.hud = this.add.image(1920,1080, "HUD").setOrigin(0).setPosition(0,0);
+      
+      //Oleada
+      this.oleadas = new Oleada(this, 1842, 68, 4);
 
-    //HUD
-    this.hud = this.add.image(1920,1080, "HUD").setOrigin(0).setPosition(0,0);
-    
-    //Oleada
-    this.oleadas = new Oleada(this, 1842, 68, 4);
+      //Dinero
+      this.dinero = new Dinero(this, 1677, 68);
 
-    //Dinero
-    this.dinero = new Dinero(this, 1677, 68);   
+      //Balas
+      this.balas = this.add.group();
 
     //Activa el imput de ratón
     let pointer = this.input.activePointer;
@@ -90,7 +96,6 @@ export default class Nivel0 extends Phaser.Scene {
     //Construcción de torretas
     for(let i = 0; i < this.numHuecos; i++){
       this.torre.huecos[i].on('pointerdown', function (pointer) {
-        console.log("pulsado el hueco " + i)
         if(this.dinero.cantidad >= this.costeTNormal){
           this.torre.huecos[i].ConstruirTorretaNormal();
           this.dinero.ActualizaDinero(-this.costeTNormal);
@@ -128,9 +133,8 @@ export default class Nivel0 extends Phaser.Scene {
         if(rand == 0) this.enemigos.add(new Infanteria(this, 0, 1066, "infant")); //Lado izquierdo
         else if(rand == 1) this.enemigos.add(new Infanteria(this, 1920, 1066, "infant")); //Lado derecho
         
-        console.log(this.enemigos.children.size);
         this.tiempoUltEnem = 0;
-        this.tiempoEnem = Phaser.Math.Between(1000,3000);
+        this.tiempoEnem = Phaser.Math.Between(this.rangoIniEnem,this.rangoFinEnem);
         this.it++;
       }else this.tiempoUltEnem += delta;
     }
@@ -140,12 +144,16 @@ export default class Nivel0 extends Phaser.Scene {
     }
     
     if(this.wave < this.numEnem.length && this.muertesOleada >= this.numEnem[this.wave]){
-      this.muertesOleada = 0;
-      this.it = 0;
       this.wave++; 
       if(this.wave == this.numEnem.length) this.Finish(true);
-      else this.oleadas.CambiaOleada();
-      this.empiezaRonda = 0;
+      else{
+        this.muertesOleada = 0;
+        this.it = 0;
+        this.oleadas.CambiaOleada();
+        this.empiezaRonda = 0;
+        this.rangoIniEnem -= 100;
+        this.rangoFinEnem -= 100;
+      }
     }
     this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal
   }
@@ -155,8 +163,32 @@ export default class Nivel0 extends Phaser.Scene {
     else this.gameover.visible = true;
     this.boton_menu.visible = true;
     this.boton_rein.visible = true;
+
+    //Destrucción y visibilidad de objetos
     for(let i = 0; i < this.numHuecos; i++){
       this.torre.huecos[i].visible = false;
     } 
+
+    this.torretas.children.iterate(torreta =>{
+      torreta.visible = false;
+    })
+
+    this.enemigos.children.iterate(enem =>{      
+      if(enem != undefined) {
+        enem.barra.destroy();
+        enem.destroy();
+      }
+    })
+
+    this.balas.children.iterate(bala =>{
+      if(bala!= undefined) bala.destroy();
+    })
+
+    this.torre.torreta_principal.visible = false;;
+    this.torre.barra.visible = false;;
+    this.torre.visible = false;
+    this.oleadas.visible = false;
+    this.dinero.visible = false;
+    this.hud.visible = false;
   }
 }

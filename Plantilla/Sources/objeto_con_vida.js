@@ -40,6 +40,7 @@ export class ObjetoConVida extends Phaser.GameObjects.Sprite {
     //Inflige daño a la vida
     PierdeVida(daño){
         this.vida -= daño;
+        this.IgualaVida();
         this.ReduceBarra();
     }
 
@@ -63,5 +64,6 @@ export class ObjetoConVida extends Phaser.GameObjects.Sprite {
     //Iguala a la vida máxima si supera los límites
     IgualaVida(){
         if(this.vida >= this.vidaMax) this.vida = this.vidaMax;
+        else if(this.vida <= 0) this.vida = 0;
     }
 }

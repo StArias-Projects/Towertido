@@ -12,7 +12,7 @@ export default class Torre extends ObjetoConVida{
         if(pisos == 4) this.altura -= 396;
         this.setPosition(960, this.altura);
         scene.add.existing(this);
-
+        this.game = scene;
         //Creamos la torreta principal
         this.torreta_principal = new TorretaPrincipal (scene, 960, this.altura - 500, "tor_prin");
 
@@ -28,7 +28,9 @@ export default class Torre extends ObjetoConVida{
         scene.physics.world.enable(this);
     }
 
-    preUpdate(time, delta){
-        
+    preUpdate(time, delta){        
+        if(this.Muerto()) {
+            this.game.Finish(false);
+       } 
     }
 }

@@ -20,7 +20,6 @@ export default class Menu extends Phaser.Scene {
         let pointer = this.input.activePointer;
 
         this.boton_ini.on('pointerdown', pointer => {
-            console.log("Se ha pulsado");
             this.scene.start('Nivel0');
         }); 
     }
