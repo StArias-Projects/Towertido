@@ -6,7 +6,7 @@ export class ObjetoConVida extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         this.vida = vidaMax;
         this.vidaMax = vidaMax;
-        this.barra = new Barra(scene, x, y - this.height * 1.5, "vida");
+        this.barra = new Barra(scene, x, y - this.height * 3, "vida");
         this.barraScaleX;
         this.barraScaleY;
 

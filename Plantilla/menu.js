@@ -1,5 +1,3 @@
-//import Nivel0 from './Levels/nivel0'
-
 export default class Menu extends Phaser.Scene {
     constructor() {
       super({ key: 'Menu' });
@@ -14,14 +12,11 @@ export default class Menu extends Phaser.Scene {
         this.bg = this.add.image(960,540,"bg");
 
         this.logo = this.add.image(960,250, "logo");
-        this.logo.setScale(2);
+        this.logo.setScale(3);
 
+        this.boton_ini = this.add.image(960,650, "boton_inicio").setInteractive();
         
-        this.boton_ini = this.add.image(960,540, "boton_inicio").setInteractive();
-        this.boton_ini.setScale(0.5);
-
-        
-         //Puntero y eventos
+        //Puntero y eventos
         let pointer = this.input.activePointer;
 
         this.boton_ini.on('pointerdown', pointer => {
@@ -29,8 +24,4 @@ export default class Menu extends Phaser.Scene {
             this.scene.start('Nivel0');
         }); 
     }
-  
-    update(time, delta) {
-          
-    }
-  }
+}

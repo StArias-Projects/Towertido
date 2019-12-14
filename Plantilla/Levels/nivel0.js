@@ -15,12 +15,17 @@ export default class Nivel0 extends Phaser.Scene {
     this.load.image("fondo", "./Assets/Images/fondo.png");
     this.load.image("tor_prin", "./Assets/Images/torreta_principal.png");
     this.load.image("bala_normal", "./Assets/Images/bala_normal.png");
-    this.load.spritesheet("infant", "./Assets/Images/infanteria.png", {frameWidth: 70, frameHeight: 77});
+    this.load.image("infant", "./Assets/Images/infanteria.png");
     this.load.image("torre", "./Assets/Images/torre.png");
     this.load.image("hueco", "./Assets/Images/hueco.png");
     this.load.image("torreta_normal", "./Assets/Images/torreta_normal.png");
     this.load.image("vida", "./Assets/Images/barra_vida.png");
     this.load.image("HUD", "./Assets/Images/HUD.png");
+    this.load.image("boton_menu","./Assets/Images/botonMenu.png");
+    this.load.image("boton_rein","./Assets/Images/botonReiniciar.png");
+    this.load.image("win","./Assets/Images/win.png");
+    this.load.image("gameover","./Assets/Images/gameover.png");
+    //Sonidos
   }
 
   create() {
@@ -33,7 +38,7 @@ export default class Nivel0 extends Phaser.Scene {
     this.torPrinDisparaTime = 0;
 
     //Variables generales
-    this.pisos = 4; //2, 3 o 4
+    this.pisos = 3; //2, 3 o 4
     this.tiempoUltEnem = 0;
     this.costeTNormal = 100;
     this.infanteriaDinero = 200;
@@ -49,10 +54,10 @@ export default class Nivel0 extends Phaser.Scene {
     this.enemigos = this.add.group(); //Array de enemigos
     this.muertesOleada = 0;
     this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
-    this.numEnem[0] = 1;
-    this.numEnem[1] = 1;
-    this.numEnem[2] = 1;
-    this.numEnem[3] = 1;
+    this.numEnem[0] = 1;      //8
+    this.numEnem[1] = 1;     //12 
+    this.numEnem[2] = 1;     //18
+    this.numEnem[3] = 2;     //28
     this.wave = 0; //Sirve para iterar entre el array numEnem
     this.it = 0; //Sirve para iterar entre el grupo de enemigos
 
@@ -63,13 +68,12 @@ export default class Nivel0 extends Phaser.Scene {
     this.oleadas = new Oleada(this, 1842, 68, 4);
 
     //Dinero
-    this.dinero = new Dinero(this, 1677, 68);
+    this.dinero = new Dinero(this, 1677, 68);   
 
     //Activa el imput de ratón
     let pointer = this.input.activePointer;
 
     //Eventos Ratón
-
     //Rotación de la torreta principal en función del ratón
     this.input.on('pointermove', function (pointer) {
       this.torre.torreta_principal.Rotar(pointer.x, pointer.y);
@@ -92,16 +96,37 @@ export default class Nivel0 extends Phaser.Scene {
           this.dinero.ActualizaDinero(-this.costeTNormal);
         } 
       }, this);
-    }       
+    }  
+
+    //Win y Game Over
+    this.win = this.add.image(960,350, "win");
+    this.win.setScale(2.2);
+    this.win.visible = false;
+    this.gameover = this.add.image(960,400, "gameover");
+    this.gameover.visible = false;
+
+    //Boton para volver al Menu
+    this.boton_menu = this.add.image(650,800, "boton_menu").setInteractive();
+    this.boton_menu.visible = false;
+    this.boton_menu.on('pointerdown', pointer => {
+      this.scene.start('Menu');
+    }); 
+
+    //Boton para volver a jugar
+    this.boton_rein = this.add.image(1270,800, "boton_rein").setInteractive();
+    this.boton_rein.visible = false;
+    this.boton_rein.on('pointerdown', pointer => {
+      this.scene.start('Nivel0');
+    }); 
   }
     
   update(time, delta) {  
     if(this.empiezaRonda >= this.tiempoEntreRonda){
     // Spawner
       if(this.tiempoUltEnem >= this.tiempoEnem && this.wave < this.numEnem.length && this.it < this.numEnem[this.wave]){
-        let rand = Phaser.Math.Between(0, 6);
-        if(rand <= 2) this.enemigos.add(new Infanteria(this, 0, 1080, "infant")); //Lado izquierdo
-        else if(rand >2) this.enemigos.add(new Infanteria(this, 1920, 1080, "infant")); //Lado derecho
+        let rand = Phaser.Math.Between(0, 1);
+        if(rand == 0) this.enemigos.add(new Infanteria(this, 0, 1066, "infant")); //Lado izquierdo
+        else if(rand == 1) this.enemigos.add(new Infanteria(this, 1920, 1066, "infant")); //Lado derecho
         
         console.log(this.enemigos.children.size);
         this.tiempoUltEnem = 0;
@@ -118,10 +143,20 @@ export default class Nivel0 extends Phaser.Scene {
       this.muertesOleada = 0;
       this.it = 0;
       this.wave++; 
-      if(this.wave == this.numEnem.length) console.log("WIN"); //Cambiar para que cambie de escena
-      this.oleadas.CambiaOleada();
+      if(this.wave == this.numEnem.length) this.Finish(true);
+      else this.oleadas.CambiaOleada();
       this.empiezaRonda = 0;
     }
     this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal
+  }
+
+  Finish(win){
+    if(win) this.win.visible = true;
+    else this.gameover.visible = true;
+    this.boton_menu.visible = true;
+    this.boton_rein.visible = true;
+    for(let i = 0; i < this.numHuecos; i++){
+      this.torre.huecos[i].visible = false;
+    } 
   }
 }

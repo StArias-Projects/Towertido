@@ -20,7 +20,7 @@ export class Enemigos extends ObjetoConVida {
         this.time_to_shoot += delta;
         if(this.time_to_shoot > 2000){
             this.time_to_shoot = 0;
-            let angle = Phaser.Math.Angle.Between(this.x, this.y, 960,1080 - this.height);
+            let angle = Phaser.Math.Angle.Between(this.x, this.y, this.game.torre.x ,700);
             this.nueva_bala = new BalaNormal (this.scene, this.x, this.y - this.height, "bala_normal", angle, 50, true, 100);
             console.log(this.game.torre);
             this.game.physics.add.overlap(this.nueva_bala, this.game.torre, this.BalaTorre, null, this.game);
@@ -31,7 +31,7 @@ export class Enemigos extends ObjetoConVida {
         console.log("Bala enem + Torre");
         torre.PierdeVida(bala.daño);
         bala.destroy();
-        if(torre.Muerto()) console.log("GAME OVER!"); //Aqui va el cambio a la escena de GAME OVER
+        if(torre.Muerto()) this.game.Finish(false);
     }
 
     //Detecta al objetivo a una distancia en X
@@ -62,6 +62,7 @@ export class Enemigos extends ObjetoConVida {
             this.destroy();
             this.game.enemigos.remove(this);
             this.game.muertesOleada++;
+            this.game.dinero.ActualizaDinero(this.valorAlMorir);
             console.log("Enemigos muertos: " + this.game.muertesOleada);
         }else{
             if(!this.objetivo_encontrado){

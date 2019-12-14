@@ -38,14 +38,22 @@ export class Torreta extends Phaser.GameObjects.Sprite {
                 i++;
             }
         }
+        if(this.target) console.log("Enemigo encontrado");
     }
+
+    Rotar() {
+        this.rotation = Phaser.Math.Angle.Between(this.x, this.y, this.targetX, this.targetY);
+    }
+
+
     preUpdate(time, delta){
-        // if(this.target){
+        if(this.target){
+            this.Rotar();
             this.time_to_shoot = this.time_to_shoot + 1;
             if(this.time_to_shoot > 100){
                 this.Disparar();
                 this.time_to_shoot = 0;
             }
-        // }else this.BuscaEnemigo();
+        }else this.BuscaEnemigo();
     }
 }

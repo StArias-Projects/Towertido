@@ -12,7 +12,6 @@ export default class Torre extends ObjetoConVida{
         if(pisos == 4) this.altura -= 396;
         this.setPosition(960, this.altura);
         scene.add.existing(this);
-        scene.physics.world.enable(this);
 
         //Creamos la torreta principal
         this.torreta_principal = new TorretaPrincipal (scene, 960, this.altura - 500, "tor_prin");
@@ -26,6 +25,7 @@ export default class Torre extends ObjetoConVida{
             this.huecos[i * 2 + 1] = new Hueco(scene, 960 + distancia_al_centro, altura_ini, "hueco"); //Huecos de la derecha
             altura_ini -= 198;
         }
+        scene.physics.world.enable(this);
     }
 
     preUpdate(time, delta){
