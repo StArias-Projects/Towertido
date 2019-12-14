@@ -2,7 +2,6 @@ import { ObjetoConVida } from "./objeto_con_vida.js";
 import BalaNormal from './bala_normal.js';
 
 export class Enemigos extends ObjetoConVida {
-
     constructor(scene, x, y, type, vidaMax, vel){
         super(scene, x, y, type, vidaMax, false);
         if(this.x > 960){
@@ -55,7 +54,6 @@ export class Enemigos extends ObjetoConVida {
     }
 
     //Funciones de la vida
-
     preUpdate(time, delta){
         if(this.Muerto()) {
             this.barra.destroy();
