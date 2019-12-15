@@ -21,10 +21,12 @@ export default class Nivel0 extends Phaser.Scene {
     this.load.image("hueco", "./Assets/Images/hueco.png");
     this.load.image("torreta_normal", "./Assets/Images/torreta_normal.png");
     this.load.image("vida", "./Assets/Images/barra_vida.png");
-    this.load.image("HUD", "./Assets/Images/HUD.png");
+    this.load.image("HUD", "./Assets/Images/HUDsinMode.png");
     //Audio
     this.load.audio("shot_enem", "./Assets/Sounds/ShotEnemy.mp3");
     this.load.audio("shot_torr", "./Assets/Sounds/ShotTorret.mp3");
+    this.load.audio("money_earn", "./Assets/Sounds/MoneyEarn.mp3");
+    this.load.audio("money_drop", "./Assets/Sounds/MoneyDrop.mp3");
   }
 
   create() {
@@ -36,6 +38,8 @@ export default class Nivel0 extends Phaser.Scene {
     this.click = this.sound.add("click");
     this.shot_enem = this.sound.add("shot_enem");
     this.shot_torr = this.sound.add("shot_torr");
+    this.money_earn = this.sound.add("money_earn");
+    this.money_drop = this.sound.add("money_drop");
 
     //Tiempos de espera
     this.tiempoEnem = 0;
@@ -99,7 +103,7 @@ export default class Nivel0 extends Phaser.Scene {
     for(let i = 0; i < this.numHuecos; i++){
       this.torre.huecos[i].on('pointerdown', function (pointer) {
         if(this.dinero.cantidad >= this.costeTNormal){
-          this.click.play();
+          this.money_drop.play();
           this.torre.huecos[i].ConstruirTorretaNormal();
           this.dinero.ActualizaDinero(-this.costeTNormal);
         } 
