@@ -22,7 +22,7 @@ export default class Menu extends Phaser.Scene {
         this.boton_ini = this.add.image(960,650, "boton_inicio").setInteractive();
         
         this.bg_sound = this.sound.add("bg_music2");
-        //this.bg_sound.play();
+        this.bg_sound.play();
         this.click = this.sound.add("click");
 
         this.boton_ini.on('pointerdown', pointer => {
