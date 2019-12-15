@@ -5,7 +5,7 @@ import Barra from "./barra_vida.js";
 
 export default class Torre extends ObjetoConVida{
     constructor(scene, x, y, type, pisos){
-        super(scene, x, y, type, 1500, true);
+        super(scene, x, y, type, 2000, true);
         this.setScale(1.8, 2.2);
         this.altura = 1024;
         if(pisos == 3) this.altura -= 198;

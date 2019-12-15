@@ -22,11 +22,20 @@ export default class Nivel0 extends Phaser.Scene {
     this.load.image("torreta_normal", "./Assets/Images/torreta_normal.png");
     this.load.image("vida", "./Assets/Images/barra_vida.png");
     this.load.image("HUD", "./Assets/Images/HUD.png");
-    //Sonidos
+    //Audio
+    this.load.audio("shot_enem", "./Assets/Sounds/ShotEnemy.mp3");
+    this.load.audio("shot_torr", "./Assets/Sounds/ShotTorret.mp3");
   }
 
   create() {
     this.fondo = this.add.image(960, 525, "fondo");
+
+    //Efectos de sonido
+    this.bg_sound = this.sound.add("bg_music");
+    this.bg_sound.play();
+    this.click = this.sound.add("click");
+    this.shot_enem = this.sound.add("shot_enem");
+    this.shot_torr = this.sound.add("shot_torr");
 
     //Tiempos de espera
     this.tiempoEnem = 0;
@@ -37,41 +46,40 @@ export default class Nivel0 extends Phaser.Scene {
     this.pisos = 3; //2, 3 o 4
     this.tiempoUltEnem = 0;
     this.costeTNormal = 100;
-    this.infanteriaDinero = 200;
     this.tiempoEntreRonda = 5000;
     this.empiezaRonda = 0;
 
     //Creación de objetos
-      //Torre
-      this.torre = new Torre(this, 960, 1024, "torre", this.pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
-      this.numHuecos = this.torre.huecos.length;
-      //Torretas
-      this.torretas = this.add.group(); //Aray de torretas aliadas
-      
-      //Enemigos
-      this.enemigos = this.add.group(); //Array de enemigos
-      this.muertesOleada = 0;
-      this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
-      this.numEnem[0] = 1;      //8
-      this.numEnem[1] = 1;     //12 
-      this.numEnem[2] = 1;     //18
-      this.numEnem[3] = 1;     //28
-      this.wave = 0; //Sirve para iterar entre el array numEnem
-      this.it = 0; //Sirve para iterar entre el grupo de enemigos
-      this.rangoIniEnem = 500; //Rango de apracición de enemigos(x, y);
-      this.rangoFinEnem = 1500;
+    //Torre
+    this.torre = new Torre(this, 960, 1024, "torre", this.pisos); //La torre tiene que crear los huecos y poner la torreta principal encima suya en función del número de pisos
+    this.numHuecos = this.torre.huecos.length;
+    //Torretas
+    this.torretas = this.add.group(); //Aray de torretas aliadas
+    
+    //Enemigos
+    this.enemigos = this.add.group(); //Array de enemigos
+    this.muertesOleada = 0;
+    this.numEnem = new Array(4); //Array para saber el número de enemigos de cada oleada
+    this.numEnem[0] = 8;      //8
+    this.numEnem[1] = 16;     //8 mas
+    this.numEnem[2] = 26;     //10 mas
+    this.numEnem[3] = 38;     //12 mas
+    this.wave = 0; //Sirve para iterar entre el array numEnem
+    this.it = 0; //Sirve para iterar entre el grupo de enemigos
+    this.rangoIniEnem = 1200; //Rango de apracición de enemigos(x, y);
+    this.rangoFinEnem = 2000;
 
-      //HUD
-      this.hud = this.add.image(1920,1080, "HUD").setOrigin(0).setPosition(0,0);
-      
-      //Oleada
-      this.oleadas = new Oleada(this, 1842, 68, 4);
-      this.timer = new Timer(this, 970, 68);
-      //Dinero
-      this.dinero = new Dinero(this, 1677, 68);
+    //HUD
+    this.hud = this.add.image(1920,1080, "HUD").setOrigin(0).setPosition(0,0);
+    
+    //Oleada
+    this.oleadas = new Oleada(this, 1842, 68, 4);
+    this.timer = new Timer(this, 970, 68);
+    //Dinero
+    this.dinero = new Dinero(this, 1677, 68);
 
-      //Balas
-      this.balas = this.add.group();
+    //Balas
+    this.balas = this.add.group();
 
     //Eventos Ratón
     //Rotación de la torreta principal en función del ratón
@@ -91,6 +99,7 @@ export default class Nivel0 extends Phaser.Scene {
     for(let i = 0; i < this.numHuecos; i++){
       this.torre.huecos[i].on('pointerdown', function (pointer) {
         if(this.dinero.cantidad >= this.costeTNormal){
+          this.click.play();
           this.torre.huecos[i].ConstruirTorretaNormal();
           this.dinero.ActualizaDinero(-this.costeTNormal);
         } 
@@ -125,14 +134,15 @@ export default class Nivel0 extends Phaser.Scene {
         this.it = 0;
         this.oleadas.CambiaOleada();
         this.empiezaRonda = 0;
-        this.rangoIniEnem -= 100;
-        this.rangoFinEnem -= 100;
+        this.rangoIniEnem -= 200;
+        this.rangoFinEnem -= 200;
       }
     }
     this.torPrinDisparaTime += delta; //Controla la cadencia de la torreta principal    
   }
 
   Finish(win){
+    this.bg_sound.stop();
     if(win) this.scene.start('Win');
     else this.scene.start('GameOver');
   }
