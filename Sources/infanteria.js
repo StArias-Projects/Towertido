@@ -8,7 +8,7 @@ export default class Infanteria extends Enemigos {
         this.setOrigin(0.5, 1);  
         scene.add.existing(this);
         this.valorAlMorir = 10;
-        this.time_to_shoot = 1000;
+        this.time_to_shoot = 0;
 
     }
     
