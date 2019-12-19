@@ -25,7 +25,7 @@ export default class Pausa extends Phaser.Scene{
 
         this.boton_menu.on('pointerdown', pointer => {
             this.click.play();
-            this.scene.moveDown('Nivel0');
+            this.scene.stop('Nivel0');
             this.scene.stop();
             this.scene.start('Menu');
         });

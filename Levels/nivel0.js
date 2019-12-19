@@ -111,6 +111,7 @@ export default class Nivel0 extends Phaser.Scene {
       }
     }, this);
 
+    //Eventos de mute
     this.muteOff.on('pointerdown', function(pointer){
       this.muteOff.visible = false;
       this.muteOn.visible = true;
@@ -120,7 +121,7 @@ export default class Nivel0 extends Phaser.Scene {
     this.muteOn.on('pointerdown', function(pointer){
       this.muteOn.visible = false;
       this.muteOff.visible = true;
-      this.bg_sound.play();
+      this.bg_sound.resume();
     }, this);
 
     //Construcción de torretas
@@ -137,6 +138,9 @@ export default class Nivel0 extends Phaser.Scene {
     
   update(time, delta) {
     if(this.p.isDown){
+      this.muteOn.visible = true;
+      this.muteOff.visible = false;
+      this.bg_sound.pause();
       this.scene.launch("PausaMenu");
       this.scene.pause();
       this.p.isDown = false;
