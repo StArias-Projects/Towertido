@@ -50,7 +50,7 @@ export class ObjetoConVida extends Phaser.GameObjects.Sprite {
             this.game.enemigos.remove(this);
             this.game.muertesOleada++;
             this.game.dinero.ActualizaDinero(this.valorAlMorir);
-            this.game.money_earn.play();
+            if(this.game.muteOff.visible)this.game.money_earn.play();
         }
     }
 

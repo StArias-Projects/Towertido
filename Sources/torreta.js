@@ -41,8 +41,8 @@ export class Torreta extends Phaser.GameObjects.Sprite {
     preUpdate(time, delta){
         if(this.target && this.enem != undefined && !this.enem.Muerto() ){
             this.Rotar();
-            this.time_to_shoot = this.time_to_shoot + 1;
-            if(this.time_to_shoot > 100){
+            this.time_to_shoot += delta;
+            if(this.time_to_shoot > 1000){
                 this.Disparar();
                 this.time_to_shoot = 0;
             }

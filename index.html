@@ -18,6 +18,7 @@
         import Nivel0 from './Levels/nivel0.js';
         import GameOver from './Levels/game_over.js';
         import Win from './Levels/win.js';
+        import Pausa from './Levels/pausa.js';
 
         var config = {
             type: Phaser.AUTO,
@@ -31,7 +32,7 @@
                 mode: Phaser.Scale.FIT,
                 autoCenter: Phaser.Scale.CENTER_BOTH
             },
-            scene: [ Menu, Nivel0, GameOver, Win ],
+            scene: [ Menu, Nivel0, GameOver, Win, Pausa ],
             physics: { default: 'arcade', arcade: { gravity: { y: 0 }, debug: false } }
         };
         new Phaser.Game(config);

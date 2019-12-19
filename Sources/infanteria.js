@@ -8,7 +8,7 @@ export default class Infanteria extends Enemigos {
         this.setOrigin(0.5, 1);  
         scene.add.existing(this);
         this.valorAlMorir = 10;
-        this.time_to_shoot = 1000;
+        this.time_to_shoot = 0;
 
     }
     
@@ -18,7 +18,7 @@ export default class Infanteria extends Enemigos {
             this.time_to_shoot = 0;
             let angle = Phaser.Math.Angle.Between(this.x, this.y, this.game.torre.x ,700);
             this.nueva_bala = new BalaNormal (this.game, this.x, this.y - this.height, "bala_normal", angle, 50, 100);
-            this.game.shot_enem.play();
+            if(this.game.muteOff.visible)this.game.shot_enem.play();
             this.game.physics.add.overlap(this.nueva_bala, this.game.torre, this.BalaTorre, null, this.game); //Añade colisiones entre la bala y un target
             this.game.balas.add(this.nueva_bala);
         }

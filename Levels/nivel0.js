@@ -4,6 +4,7 @@ import Torre from '../Sources/torre.js';
 import Dinero from '../Sources/dinero.js';
 import Oleada from '../Sources/oleadas.js';
 import Timer from '../Sources/tiempo_entre_oleada.js';
+import Pausa from './pausa.js';
 
 //Clase principal
 export default class Nivel0 extends Phaser.Scene {
@@ -22,7 +23,10 @@ export default class Nivel0 extends Phaser.Scene {
     this.load.image("torreta_normal", "./Assets/Images/torreta_normal.png");
     this.load.image("vida", "./Assets/Images/barra_vida.png");
     this.load.image("HUD", "./Assets/Images/HUDsinMode.png");
+    
     //Audio
+    this.load.image("muteOn", "./Assets/Images/muteOn.png");
+    this.load.image("muteOff", "./Assets/Images/muteOff.png");
     this.load.audio("shot_enem", "./Assets/Sounds/ShotEnemy.mp3");
     this.load.audio("shot_torr", "./Assets/Sounds/ShotTorret.mp3");
     this.load.audio("money_earn", "./Assets/Sounds/MoneyEarn.mp3");
@@ -31,7 +35,8 @@ export default class Nivel0 extends Phaser.Scene {
 
   create() {
     this.fondo = this.add.image(960, 525, "fondo");
-
+    this.pause = new Pausa(this);
+    
     //Efectos de sonido
     this.bg_sound = this.sound.add("bg_music");
     this.bg_sound.play();
@@ -41,10 +46,14 @@ export default class Nivel0 extends Phaser.Scene {
     this.money_earn = this.sound.add("money_earn");
     this.money_drop = this.sound.add("money_drop");
 
+    this.muteOff = this.add.image( 1377, 68, "muteOff").setInteractive();
+    this.muteOn = this.add.image( 1377, 68, "muteOn").setInteractive();
+    this.muteOn.visible = false;
+
     //Tiempos de espera
     this.tiempoEnem = 0;
     this.torPrinDelay = 500;
-    this.torPrinDisparaTime = 0;
+    this.torPrinDisparaTime = 500;
 
     //Variables generales
     this.pisos = 3; //2, 3 o 4
@@ -85,6 +94,9 @@ export default class Nivel0 extends Phaser.Scene {
     //Balas
     this.balas = this.add.group();
 
+    //Input
+    this.p = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+
     //Eventos Ratón
     //Rotación de la torreta principal en función del ratón
     this.input.on('pointermove', function (pointer) {
@@ -99,11 +111,23 @@ export default class Nivel0 extends Phaser.Scene {
       }
     }, this);
 
+    this.muteOff.on('pointerdown', function(pointer){
+      this.muteOff.visible = false;
+      this.muteOn.visible = true;
+      this.bg_sound.pause();
+    }, this);
+    
+    this.muteOn.on('pointerdown', function(pointer){
+      this.muteOn.visible = false;
+      this.muteOff.visible = true;
+      this.bg_sound.play();
+    }, this);
+
     //Construcción de torretas
     for(let i = 0; i < this.numHuecos; i++){
       this.torre.huecos[i].on('pointerdown', function (pointer) {
         if(this.dinero.cantidad >= this.costeTNormal){
-          this.money_drop.play();
+          if(this.muteOff.visible)this.money_drop.play();
           this.torre.huecos[i].ConstruirTorretaNormal();
           this.dinero.ActualizaDinero(-this.costeTNormal);
         } 
@@ -112,6 +136,11 @@ export default class Nivel0 extends Phaser.Scene {
   }
     
   update(time, delta) {
+    if(this.p.isDown){
+      this.scene.launch("PausaMenu");
+      this.scene.pause();
+      this.p.isDown = false;
+    }
     if(this.empiezaRonda >= this.tiempoEntreRonda){
     // Spawner
       if(this.tiempoUltEnem >= this.tiempoEnem && this.wave < this.numEnem.length && this.it < this.numEnem[this.wave]){

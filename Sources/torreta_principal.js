@@ -16,7 +16,7 @@ export default class TorretaPrincipal extends Phaser.GameObjects.Sprite {
     Disparar(x, y){
         let angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
         this.nueva_bala = new BalaNormal (this.scene, this.x, this.y, "bala_normal", angle, 50, this.daño);
-        this.game.shot_torr.play();
+        if(this.game.muteOff.visible)this.game.shot_torr.play();
         if(this.game.enemigos != undefined){
             this.game.enemigos.children.iterate(enem =>{
                 this.game.physics.add.overlap(this.nueva_bala, enem, this.BalaEnem, null, this.game);
